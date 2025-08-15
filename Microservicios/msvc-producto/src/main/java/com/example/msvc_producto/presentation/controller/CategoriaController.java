@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/categorias")
 @Tag(name = "Categorías", description = "API para gestionar categorías de productos")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 public class CategoriaController {
 
     @Autowired

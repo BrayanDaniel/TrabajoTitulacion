@@ -8,7 +8,6 @@ public class ProductoClientFallback implements ProductoClient {
 
     @Override
     public ProductoDto obtenerProducto(Long id) {
-        // Crear un DTO básico con la información mínima
         ProductoDto dto = new ProductoDto();
         dto.setId(id);
         dto.setNombre("Producto no disponible");
@@ -16,10 +15,8 @@ public class ProductoClientFallback implements ProductoClient {
     }
 
     @Override
-    public ProductoDto actualizarStockProducto(Long id, Integer nuevoStock) {
-        // Simplemente retornar un DTO básico, ya que no pudimos actualizar
-        ProductoDto dto = new ProductoDto();
-        dto.setId(id);
-        return dto;
+    public void actualizarStockProducto(Long id, Integer stock) {
+        // Fallback: no hacer nada si el servicio de productos no está disponible
+        System.out.println("Fallback: No se pudo sincronizar stock para producto " + id);
     }
 }

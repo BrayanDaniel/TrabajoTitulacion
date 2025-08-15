@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "msvc-producto", url = "${app.msvc-producto.url}")
+@FeignClient(name = "msvc-producto", url = "${app.msvc-producto.url}", fallback = ProductoClientFallback.class)
 public interface ProductoClient {
 
     @GetMapping("/api/productos/{id}")
     ProductoDto obtenerProducto(@PathVariable("id") Long id);
+
+    @PutMapping("/api/productos/{id}/sincronizar-stock")
+    void actualizarStockProducto(@PathVariable("id") Long id, @RequestParam("stock") Integer stock);
 
 }

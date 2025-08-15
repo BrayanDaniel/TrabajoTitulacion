@@ -11,4 +11,5 @@ public interface InventarioRepository {
     Optional<Inventario> findByProductoId(Long productoId);
     List<Inventario> findAll();
     void deleteById(Long id);
+    List<Inventario> findByProductoIdIn(List<Long> productosIds);
 }

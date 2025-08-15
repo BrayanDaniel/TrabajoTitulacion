@@ -1,13 +1,81 @@
 package com.example.demo.application.mapper;
 
+import com.example.demo.application.dto.RegistroUsuarioAdminDto;
 import com.example.demo.application.dto.RegistroUsuarioDto;
 import com.example.demo.application.dto.UsuarioResponseDto;
 import com.example.demo.domain.model.Usuario;
 import com.example.demo.infrastructure.persistence.entity.UsuarioEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 public class UsuarioMapper {
+
+    // =====================================
+    // MAPEO DESDE REGISTRO PÚBLICO
+    // =====================================
+
+    public Usuario toDomain(RegistroUsuarioDto registroDto) {
+        return Usuario.builder()
+                .username(registroDto.getUsername())
+                .email(registroDto.getEmail())
+                .nombre(registroDto.getNombre())
+                .apellido(registroDto.getApellido())
+                .password(registroDto.getPassword())
+                .roles(Collections.singleton("ROLE_USER")) // Por defecto cliente
+                .activo(true)
+                .build();
+    }
+
+    // =====================================
+    // MAPEO DESDE REGISTRO ADMIN (NUEVO)
+    // =====================================
+
+    public Usuario toDomainFromAdmin(RegistroUsuarioAdminDto registroDto) {
+        return Usuario.builder()
+                .username(registroDto.getUsername())
+                .email(registroDto.getEmail())
+                .nombre(registroDto.getNombre())
+                .apellido(registroDto.getApellido())
+                .password(registroDto.getPassword())
+                .roles(registroDto.getRoles()) // ✅ Roles específicos del admin
+                .activo(true)
+                .build();
+    }
+
+    // =====================================
+    // MAPEO A RESPONSE DTO
+    // =====================================
+
+    public UsuarioResponseDto toResponseDto(Usuario usuario) {
+        UsuarioResponseDto dto = new UsuarioResponseDto();
+        dto.setId(usuario.getId());
+        dto.setUsername(usuario.getUsername());
+        dto.setEmail(usuario.getEmail());
+        dto.setNombre(usuario.getNombre());
+        dto.setApellido(usuario.getApellido());
+        dto.setRoles(usuario.getRoles());
+        dto.setActivo(usuario.isActivo());
+        return dto;
+    }
+
+    // =====================================
+    // MAPEO ENTITY <-> DOMAIN
+    // =====================================
+
+    public UsuarioEntity toEntity(Usuario usuario) {
+        return UsuarioEntity.builder()
+                .id(usuario.getId())
+                .username(usuario.getUsername())
+                .password(usuario.getPassword())
+                .email(usuario.getEmail())
+                .nombre(usuario.getNombre())
+                .apellido(usuario.getApellido())
+                .activo(usuario.isActivo())
+                .roles(usuario.getRoles())
+                .build();
+    }
 
     public Usuario toDomain(UsuarioEntity entity) {
         return Usuario.builder()
@@ -20,39 +88,5 @@ public class UsuarioMapper {
                 .activo(entity.isActivo())
                 .roles(entity.getRoles())
                 .build();
-    }
-
-    public UsuarioEntity toEntity(Usuario domain) {
-        return UsuarioEntity.builder()
-                .id(domain.getId())
-                .username(domain.getUsername())
-                .password(domain.getPassword())
-                .email(domain.getEmail())
-                .nombre(domain.getNombre())
-                .apellido(domain.getApellido())
-                .activo(domain.isActivo())
-                .roles(domain.getRoles())
-                .build();
-    }
-
-    public Usuario toDomain(RegistroUsuarioDto dto) {
-        return Usuario.builder()
-                .username(dto.getUsername())
-                .password(dto.getPassword())
-                .email(dto.getEmail())
-                .nombre(dto.getNombre())
-                .apellido(dto.getApellido())
-                .build();
-    }
-
-    public UsuarioResponseDto toResponseDto(Usuario domain) {
-        UsuarioResponseDto dto = new UsuarioResponseDto();
-        dto.setId(domain.getId());
-        dto.setUsername(domain.getUsername());
-        dto.setEmail(domain.getEmail());
-        dto.setNombre(domain.getNombre());
-        dto.setApellido(domain.getApellido());
-        dto.setRoles(domain.getRoles());
-        return dto;
     }
 }

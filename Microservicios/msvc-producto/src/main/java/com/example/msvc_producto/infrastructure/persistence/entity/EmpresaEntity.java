@@ -16,7 +16,7 @@ public class EmpresaEntity {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, length = 11, unique = true)
+    @Column(nullable = false, length = 20, unique = true)
     private String ruc;
 
     @Column(length = 200)

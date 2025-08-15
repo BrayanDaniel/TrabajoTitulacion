@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RequestMapping("/api/movimientos")
 @Tag(name = "Movimientos de Inventario", description = "API para gestionar los movimientos de inventario")
 public class MovimientoInventarioController {

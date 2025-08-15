@@ -279,7 +279,24 @@ const AppConfig = (props: AppConfigProps) => {
 
     return (
         <>
-            <button className="layout-config-button config-link" type="button" onClick={onConfigButtonClick}>
+            <button 
+    className="layout-config-button config-link" 
+    type="button" 
+    onClick={onConfigButtonClick}
+    style={{
+        backgroundColor: 'var(--primary-color)',
+        borderColor: 'var(--primary-color)',
+        transition: 'all 0.3s ease'
+    }}
+    onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--primary-700)'; // Verde más clarito
+        e.currentTarget.style.transform = 'scale(1.1)';
+    }}
+    onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--primary-color)'; // Verde normal
+        e.currentTarget.style.transform = 'scale(1)';
+    }}
+>
                 <i className="pi pi-cog"></i>
             </button>
 

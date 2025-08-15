@@ -1,6 +1,8 @@
 package com.example.msvc_producto.domain.service;
 
+import com.example.msvc_producto.application.dto.ProductoListadoDto;
 import com.example.msvc_producto.domain.model.Producto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +15,10 @@ public interface ProductoService {
     List<Producto> buscarProductosPorCategoria(Long categoriaId);
     void eliminarProducto(Long id);
 
-    // El método actualizarStockProducto se elimina porque la gestión del stock
-    // es responsabilidad exclusiva del microservicio de inventario
+    @Transactional(readOnly = true)
+    List<ProductoListadoDto> listarProductosOptimizado();
+
+    @Transactional(readOnly = true)
+    List<ProductoListadoDto> obtenerProductosOptimizado();
+
 }

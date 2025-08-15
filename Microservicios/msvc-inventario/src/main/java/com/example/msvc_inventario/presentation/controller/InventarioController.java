@@ -1,12 +1,10 @@
 package com.example.msvc_inventario.presentation.controller;
 
 import com.example.msvc_inventario.application.client.ProductoClient;
-import com.example.msvc_inventario.application.dto.InventarioRequestDto;
-import com.example.msvc_inventario.application.dto.InventarioResponseDto;
-import com.example.msvc_inventario.application.dto.ProductoDto;
-import com.example.msvc_inventario.application.dto.SalidaInventarioLoteRequestDto;
+import com.example.msvc_inventario.application.dto.*;
 import com.example.msvc_inventario.application.mapper.InventarioMapper;
 import com.example.msvc_inventario.domain.model.Inventario;
+import com.example.msvc_inventario.domain.repository.InventarioRepository;
 import com.example.msvc_inventario.domain.service.InventarioService;
 import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,10 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RequestMapping("/api/inventarios")
 @Tag(name = "Inventarios", description = "API para gestionar inventarios")
 public class InventarioController {
@@ -28,14 +27,16 @@ public class InventarioController {
     private final InventarioService inventarioService;
     private final InventarioMapper inventarioMapper;
     private final ProductoClient productoClient;
+    private final InventarioRepository inventarioRepository;
 
-    public InventarioController(
-            InventarioService inventarioService,
-            InventarioMapper inventarioMapper,
-            @Qualifier("com.example.msvc_inventario.application.client.ProductoClient") ProductoClient productoClient) {
+    public InventarioController(InventarioService inventarioService,
+                                InventarioMapper inventarioMapper,
+                                @Qualifier("com.example.msvc_inventario.application.client.ProductoClient") ProductoClient productoClient,
+                                InventarioRepository inventarioRepository) {
         this.inventarioService = inventarioService;
         this.inventarioMapper = inventarioMapper;
         this.productoClient = productoClient;
+        this.inventarioRepository = inventarioRepository;
     }
 
     @PostMapping
@@ -221,5 +222,62 @@ public class InventarioController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseDtos);
+    }
+
+    // ==================== ENDPOINTS OPTIMIZADOS PARA STOCK ====================
+
+    @GetMapping("/cantidad/producto/{productoId}")
+    @Operation(summary = "Obtener SOLO la cantidad de stock de un producto")
+    public ResponseEntity<Integer> obtenerCantidadProducto(@PathVariable Long productoId) {
+        try {
+            Optional<Inventario> inventario = inventarioRepository.findByProductoId(productoId);
+
+            if (inventario.isPresent()) {
+                Integer cantidad = inventario.get().getCantidad();
+                return ResponseEntity.ok(cantidad != null ? cantidad : 0);
+            } else {
+                return ResponseEntity.ok(0);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(0);
+        }
+    }
+
+    @PostMapping("/cantidad/batch")
+    @Operation(summary = "Obtener cantidades de múltiples productos - OPTIMIZADO")
+    public ResponseEntity<Map<String, Integer>> obtenerCantidadesBatch(@RequestBody List<Long> productosIds) {
+        Map<String, Integer> cantidades = new HashMap<>();
+
+        try {
+            if (productosIds == null || productosIds.isEmpty()) {
+                return ResponseEntity.ok(cantidades);
+            }
+
+            // Una sola consulta para todos los productos
+            List<Inventario> inventarios = inventarioRepository.findByProductoIdIn(productosIds);
+
+            // Mapear resultados
+            for (Inventario inventario : inventarios) {
+                Integer cantidad = inventario.getCantidad() != null ? inventario.getCantidad() : 0;
+                cantidades.put(inventario.getProductoId().toString(), cantidad);
+            }
+
+            // Para productos sin inventario, agregar 0
+            for (Long productoId : productosIds) {
+                String key = productoId.toString();
+                if (!cantidades.containsKey(key)) {
+                    cantidades.put(key, 0);
+                }
+            }
+
+            return ResponseEntity.ok(cantidades);
+
+        } catch (Exception e) {
+            // En caso de error, devolver todos en 0
+            for (Long productoId : productosIds) {
+                cantidades.put(productoId.toString(), 0);
+            }
+            return ResponseEntity.ok(cantidades);
+        }
     }
 }

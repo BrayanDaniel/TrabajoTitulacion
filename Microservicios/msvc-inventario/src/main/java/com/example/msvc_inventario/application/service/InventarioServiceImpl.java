@@ -2,7 +2,7 @@ package com.example.msvc_inventario.application.service;
 
 import com.example.msvc_inventario.application.client.ProductoClient;
 import com.example.msvc_inventario.application.dto.ProductoDto;
-import com.example.msvc_inventario.application.dto.SalidaInventarioLoteRequestDto;
+import com.example.msvc_inventario.application.dto.SalidaInventarioItemDto;
 import com.example.msvc_inventario.domain.model.Inventario;
 import com.example.msvc_inventario.domain.model.MovimientoInventario;
 import com.example.msvc_inventario.domain.repository.InventarioRepository;
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class InventarioServiceImpl implements InventarioService {
@@ -159,11 +160,11 @@ public class InventarioServiceImpl implements InventarioService {
      */
     @Override
     @Transactional
-    public List<Inventario> procesarSalidaLote(List<SalidaInventarioLoteRequestDto.SalidaInventarioItemDto> items, String motivo) {
+    public List<Inventario> procesarSalidaLote(List<SalidaInventarioItemDto> items, String motivo) {
         List<Inventario> inventariosActualizados = new ArrayList<>();
 
         // Procesamos cada item como una salida individual
-        for (SalidaInventarioLoteRequestDto.SalidaInventarioItemDto item : items) {
+        for (SalidaInventarioItemDto item : items) {
             try {
                 Inventario inventario = actualizarStock(
                         item.getProductoId(),
@@ -180,6 +181,28 @@ public class InventarioServiceImpl implements InventarioService {
         }
 
         return inventariosActualizados;
+    }
+
+    /**
+     * Implementación del método para obtener solo la cantidad de un producto
+     */
+    @Override
+    public Integer obtenerCantidadPorProducto(Long productoId) {
+        try {
+            Optional<Inventario> inventario = inventarioRepository.findByProductoId(productoId);
+
+            if (inventario.isPresent()) {
+                Integer cantidad = inventario.get().getCantidad();
+                return cantidad != null ? cantidad : 0;
+            } else {
+                // Si no existe inventario para este producto, devolver 0
+                return 0;
+            }
+        } catch (Exception e) {
+            // En caso de cualquier error, devolver 0
+            System.err.println("Error obteniendo cantidad para producto " + productoId + ": " + e.getMessage());
+            return 0;
+        }
     }
 
     private int calcularNuevaCantidad(int cantidadActual, int cantidadMovimiento, MovimientoInventario.TipoMovimiento tipoMovimiento) {

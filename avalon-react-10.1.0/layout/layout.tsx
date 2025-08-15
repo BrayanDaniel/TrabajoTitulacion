@@ -29,10 +29,14 @@ const Layout = (props: ChildContainerProps) => {
         if (authService.isAuthenticated()) {
             setIsAuthenticated(true);
         } else {
-            // Redirigir al login inmediatamente
-            router.replace('/auth/login2');
+            // Solo redirigir al login si NO estamos en la página raíz
+            if (pathname !== '/') {
+                router.replace('/auth/login2');
+            } else {
+                setIsAuthenticated(false);
+            }
         }
-    }, [router]);
+    }, [router, pathname]);
 
     const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] = useEventListener({
         type: 'click',
@@ -154,9 +158,14 @@ const Layout = (props: ChildContainerProps) => {
         unbindMenuOutsideClickListener();
     });
 
-    // Si no está autenticado, no renderizar nada
-    if (isAuthenticated === null || !isAuthenticated) {
+    // Si no está autenticado Y no estamos en la página raíz, no renderizar nada
+    if ((isAuthenticated === null || !isAuthenticated) && pathname !== '/') {
         return null;
+    }
+
+    // Si estamos en la página raíz y no está autenticado, solo renderizar el contenido sin el layout de Avalon
+    if (pathname === '/' && !isAuthenticated) {
+        return <>{props.children}</>;
     }
 
     const containerClassName = classNames('layout-topbar-' + layoutConfig.topbarTheme, 'layout-menu-' + layoutConfig.menuTheme, 'layout-menu-profile-' + layoutConfig.menuProfilePosition, {

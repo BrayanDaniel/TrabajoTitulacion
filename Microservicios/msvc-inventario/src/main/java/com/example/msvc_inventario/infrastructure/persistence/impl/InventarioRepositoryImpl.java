@@ -42,6 +42,14 @@ public class InventarioRepositoryImpl implements InventarioRepository {
     }
 
     @Override
+    public List<Inventario> findByProductoIdIn(List<Long> productosIds) {
+        List<InventarioEntity> entities = jpaRepository.findByProductoIdIn(productosIds);
+        return entities.stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Inventario> findAll() {
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)

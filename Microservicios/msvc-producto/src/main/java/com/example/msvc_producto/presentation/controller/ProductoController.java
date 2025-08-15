@@ -2,6 +2,7 @@ package com.example.msvc_producto.presentation.controller;
 
 import com.example.msvc_producto.application.client.InventarioClient;
 import com.example.msvc_producto.application.dto.InventarioInfoDto;
+import com.example.msvc_producto.application.dto.ProductoListadoDto;
 import com.example.msvc_producto.application.dto.ProductoRequestDto;
 import com.example.msvc_producto.application.dto.ProductoResponseDto;
 import com.example.msvc_producto.application.mapper.ProductoMapper;
@@ -15,15 +16,20 @@ import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
+
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/productos")
 @Tag(name = "Productos", description = "API para gestionar productos")
 public class ProductoController {
@@ -139,6 +145,26 @@ public class ProductoController {
         return ResponseEntity.ok(responseDtos);
     }
 
+
+    @GetMapping("/listado")
+    @Operation(summary = "Listar productos optimizado (solo datos esenciales)")
+    public ResponseEntity<List<ProductoListadoDto>> listarProductosOptimizado() {
+        try {
+            List<ProductoListadoDto> productos = productoService.obtenerProductosOptimizado();
+
+            // ✅ SIN LOGGER - usar System.out temporalmente
+            System.out.println("Productos optimizados obtenidos: " + productos.size());
+            return ResponseEntity.ok(productos);
+
+        } catch (Exception e) {
+            System.err.println("Error obteniendo productos optimizados: " + e.getMessage());
+            e.printStackTrace(); // Para ver el error completo
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ArrayList<>());
+        }
+    }
+
     @GetMapping("/empresa/{empresaId}")
     @Operation(summary = "Buscar productos por empresa")
     public ResponseEntity<List<ProductoResponseDto>> buscarProductosPorEmpresa(@PathVariable Long empresaId) {
@@ -164,6 +190,23 @@ public class ProductoController {
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/sincronizar-stock")
+    @Operation(summary = "Sincronizar stock desde inventario")
+    public ResponseEntity<Void> sincronizarStock(
+            @PathVariable Long id,
+            @RequestParam Integer stock) {
+        // Este endpoint es solo para recibir notificaciones del inventario
+        // Podrías guardar el stock en caché, logs, o simplemente confirmarlo
+
+        // Verificar que el producto existe
+        productoService.obtenerProductoPorId(id);
+
+        // Log para auditoría
+        System.out.println("Stock sincronizado para producto " + id + ": " + stock);
+
+        return ResponseEntity.ok().build();
     }
 
 }

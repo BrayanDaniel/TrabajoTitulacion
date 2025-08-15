@@ -5,9 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "usuarios")
@@ -16,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,12 +29,22 @@ public class UsuarioEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String apellido;
-    private boolean activo;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean activo = true;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"))
+    @CollectionTable(
+            name = "usuario_roles",
+            joinColumns = @JoinColumn(name = "usuario_id")
+    )
     @Column(name = "rol")
+    @Builder.Default
     private Set<String> roles = new HashSet<>();
 }

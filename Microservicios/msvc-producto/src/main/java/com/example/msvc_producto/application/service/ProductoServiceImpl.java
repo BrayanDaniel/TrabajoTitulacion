@@ -1,6 +1,8 @@
 package com.example.msvc_producto.application.service;
 
 import com.example.msvc_producto.application.client.InventarioClient;
+import com.example.msvc_producto.application.dto.InventarioInfoDto;
+import com.example.msvc_producto.application.dto.ProductoListadoDto;
 import com.example.msvc_producto.domain.model.Categoria;
 import com.example.msvc_producto.domain.model.Empresa;
 import com.example.msvc_producto.domain.model.Producto;
@@ -9,6 +11,8 @@ import com.example.msvc_producto.domain.service.CategoriaService;
 import com.example.msvc_producto.domain.service.EmpresaService;
 import com.example.msvc_producto.domain.service.ProductoService;
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,8 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductoServiceImpl.class);
 
     private final ProductoRepository productoRepository;
     private final EmpresaService empresaService;
@@ -59,7 +65,7 @@ public class ProductoServiceImpl implements ProductoService {
             inventarioClient.crearInventarioParaProducto(productoGuardado.getId(), 0);
         } catch (FeignException e) {
             // Loguear error pero continuar con la creación del producto
-            System.out.println("No se pudo crear el inventario para el producto: " + e.getMessage());
+            logger.warn("No se pudo crear el inventario para el producto: {}", e.getMessage());
         }
 
         return productoGuardado;
@@ -123,4 +129,48 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.save(producto);
     }
 
+    // Método con el nombre correcto y lógica de inventario
+    // ✅ TEMPORAL: Sin inventario para debuggear velocidad
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductoListadoDto> obtenerProductosOptimizado() {
+        try {
+            List<ProductoListadoDto> productos = productoRepository.findAllOptimized();
+            System.out.println("Productos base obtenidos: " + productos.size());
+
+            // ✅ TEMPORAL: Comentar todo el inventario
+        /*
+        for (ProductoListadoDto producto : productos) {
+            try {
+                InventarioInfoDto inventario = inventarioClient.obtenerInventarioPorProductoId(producto.getId());
+                if (inventario != null && inventario.getCantidad() != null) {
+                    producto.setInventarioCantidad(inventario.getCantidad());
+                } else {
+                    producto.setInventarioCantidad(0);
+                }
+            } catch (Exception e) {
+                producto.setInventarioCantidad(0);
+            }
+        }
+        */
+
+            // ✅ TEMPORAL: Asignar 0 a todos sin llamadas HTTP
+            productos.forEach(p -> p.setInventarioCantidad(0));
+
+            System.out.println("Productos procesados: " + productos.size());
+            return productos;
+
+        } catch (Exception e) {
+            System.err.println("Error obteniendo productos optimizados: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error obteniendo productos optimizados", e);
+        }
+    }
+
+    // ✅ CORREGIDO: También agregar este método que falta en la interfaz
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductoListadoDto> listarProductosOptimizado() {
+        return obtenerProductosOptimizado();
+    }
 }
