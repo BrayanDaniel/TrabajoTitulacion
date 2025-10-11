@@ -1,0 +1,265 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.3
+-- Dumped by pg_dump version 16.3
+
+-- Started on 2025-09-23 16:05:06
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 216 (class 1259 OID 24696)
+-- Name: inventarios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventarios (
+    id bigint NOT NULL,
+    activo boolean NOT NULL,
+    cantidad integer NOT NULL,
+    fecha_actualizacion timestamp(6) without time zone NOT NULL,
+    fecha_creacion timestamp(6) without time zone NOT NULL,
+    producto_id bigint NOT NULL,
+    ubicacion character varying(100)
+);
+
+
+ALTER TABLE public.inventarios OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1259 OID 24695)
+-- Name: inventarios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inventarios_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.inventarios_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4854 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: inventarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inventarios_id_seq OWNED BY public.inventarios.id;
+
+
+--
+-- TOC entry 218 (class 1259 OID 24703)
+-- Name: movimientos_inventario; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.movimientos_inventario (
+    id bigint NOT NULL,
+    cantidad integer NOT NULL,
+    fecha_movimiento timestamp(6) without time zone NOT NULL,
+    inventario_id bigint NOT NULL,
+    motivo character varying(200),
+    tipo_movimiento character varying(20) NOT NULL,
+    usuario_id bigint,
+    CONSTRAINT movimientos_inventario_tipo_movimiento_check CHECK (((tipo_movimiento)::text = ANY ((ARRAY['ENTRADA'::character varying, 'SALIDA'::character varying, 'AJUSTE'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.movimientos_inventario OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 24702)
+-- Name: movimientos_inventario_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.movimientos_inventario_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.movimientos_inventario_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4855 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: movimientos_inventario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.movimientos_inventario_id_seq OWNED BY public.movimientos_inventario.id;
+
+
+--
+-- TOC entry 4693 (class 2604 OID 24699)
+-- Name: inventarios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventarios ALTER COLUMN id SET DEFAULT nextval('public.inventarios_id_seq'::regclass);
+
+
+--
+-- TOC entry 4694 (class 2604 OID 24706)
+-- Name: movimientos_inventario id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.movimientos_inventario ALTER COLUMN id SET DEFAULT nextval('public.movimientos_inventario_id_seq'::regclass);
+
+
+--
+-- TOC entry 4846 (class 0 OID 24696)
+-- Dependencies: 216
+-- Data for Name: inventarios; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inventarios (id, activo, cantidad, fecha_actualizacion, fecha_creacion, producto_id, ubicacion) FROM stdin;
+3	t	16	2025-07-24 15:09:41.966928	2025-05-20 11:46:04.821293	3	Sucursal 2 - 12 de Diciembre
+2	t	0	2025-07-29 06:03:06.841865	2025-05-20 11:37:56.667206	2	Almacén principal
+1	t	15	2025-07-29 06:03:06.865392	2025-05-15 14:03:48.405406	1	Almacén Principal
+7	t	15	2025-07-29 10:24:31.001548	2025-07-29 10:24:31.001548	17	Bodega A
+5	t	21	2025-08-12 13:56:45.214762	2025-07-15 11:22:29.042272	6	CASA COLOR BLANCO DE UN PISO JUNTO A LA FABRICA ULTIMO INCA
+4	t	16	2025-08-12 14:07:57.960779	2025-07-15 02:29:35.127986	4	CASA COLOR BLANCO DE UN PISO JUNTO A LA FABRICA ULTIMO INCA
+8	t	500	2025-09-05 05:22:20.926001	2025-09-05 05:22:20.926001	20	Almacén principal
+9	t	1000	2025-09-05 05:23:20.336837	2025-09-05 05:23:20.336837	19	Almacén principal
+10	t	200	2025-09-05 05:24:15.573123	2025-09-05 05:24:15.573123	21	Almacén principal
+11	t	500	2025-09-05 05:26:12.001027	2025-09-05 05:26:12.001027	22	Almacén principal
+12	t	500	2025-09-05 05:26:57.730444	2025-09-05 05:26:57.730444	23	Almacén principal
+13	t	200	2025-09-05 05:27:45.149648	2025-09-05 05:27:45.149648	24	Almacén principal
+14	t	1000	2025-09-05 05:29:22.061917	2025-09-05 05:29:22.061917	7	Almacén principal
+15	t	500	2025-09-05 05:30:44.29923	2025-09-05 05:30:44.29923	8	Almacén principal
+16	t	500	2025-09-05 05:37:20.293147	2025-09-05 05:37:20.293147	11	Almacén principal
+17	t	1000	2025-09-05 05:41:08.73993	2025-09-05 05:41:08.73993	12	Almacén principal
+18	t	1000	2025-09-05 05:42:20.789628	2025-09-05 05:42:20.789628	13	Almacén principal
+19	t	200	2025-09-05 05:43:20.877942	2025-09-05 05:43:20.877942	14	Almacén principal
+20	t	1000	2025-09-05 06:36:41.489494	2025-09-05 06:36:41.489494	36	Almacén principal
+23	t	200	2025-09-05 06:41:44.333976	2025-09-05 06:41:44.333976	41	Almacén principal
+24	t	200	2025-09-05 06:43:18.377311	2025-09-05 06:43:18.377311	40	Almacén principal
+26	t	200	2025-09-05 06:47:18.694678	2025-09-05 06:47:18.694678	42	Almacén principal
+27	t	500	2025-09-05 06:54:48.774316	2025-09-05 06:54:48.774316	34	Almacén principal
+28	t	500	2025-09-05 06:57:18.815406	2025-09-05 06:57:18.815406	28	Almacén principal
+29	t	50	2025-09-05 06:58:48.863031	2025-09-05 06:58:48.863031	30	Almacén principal
+30	t	200	2025-09-05 10:08:56.906427	2025-09-05 10:08:56.906427	43	Almacén principal
+22	t	497	2025-09-05 10:13:32.386085	2025-09-05 06:40:36.229549	35	Almacén principal
+21	t	194	2025-09-23 15:24:52.531224	2025-09-05 06:39:33.148725	37	Almacén principal
+6	t	7	2025-09-23 15:24:52.577224	2025-07-29 06:12:10.985396	16	Bodega B
+25	t	199	2025-09-23 15:24:52.589179	2025-09-05 06:44:48.60889	39	Almacén principal
+31	t	150	2025-09-23 15:34:03.084695	2025-09-23 15:34:03.084161	15	Almacén principal
+\.
+
+
+--
+-- TOC entry 4848 (class 0 OID 24703)
+-- Dependencies: 218
+-- Data for Name: movimientos_inventario; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.movimientos_inventario (id, cantidad, fecha_movimiento, inventario_id, motivo, tipo_movimiento, usuario_id) FROM stdin;
+1	25	2025-05-20 01:17:48.683797	1	Actualización	AJUSTE	1
+2	30	2025-05-20 01:31:41.05822	1	Actualización	AJUSTE	1
+3	40	2025-05-20 02:18:35.054605	1	Actualización	AJUSTE	1
+4	3	2025-05-20 13:45:17.412284	2	Venta #FACT-1747761410095	SALIDA	1
+5	2	2025-07-22 12:13:24.229048	2	Venta #FACT-1753204321379	SALIDA	1
+6	2	2025-07-22 13:31:12.729927	1	Venta #FACT-1753208976990	SALIDA	1
+7	40	2025-07-23 18:55:47.984236	1	Ajuste manual desde edición de inventario	AJUSTE	1
+8	30	2025-07-23 19:32:26.878965	1	Ajuste manual desde edición de inventario	AJUSTE	1
+9	40	2025-07-23 21:20:19.291222	1	Ajuste manual desde edición de inventario	AJUSTE	1
+10	20	2025-07-23 21:24:36.697637	1	Ajuste manual: 40 → 20 unidades	AJUSTE	1
+11	2	2025-07-24 03:00:30.02407	3	Venta #FACT-1753343945161	SALIDA	1
+12	1	2025-07-24 08:07:05.66708	2	Venta #FACT-1753361480803	SALIDA	1
+13	1	2025-07-24 08:07:05.740642	1	Venta #FACT-1753361480803	SALIDA	1
+14	1	2025-07-24 13:10:15.130765	2	Venta #FACT-1753380482236	SALIDA	1
+15	1	2025-07-24 13:10:15.169846	5	Venta #FACT-1753380482236	SALIDA	1
+16	1	2025-07-24 13:17:49.929603	3	Venta #FACT-1753381005145	SALIDA	1
+17	2	2025-07-24 15:04:27.992282	1	Venta #FACT-1753387344251	SALIDA	1
+18	1	2025-07-24 15:04:28.043016	4	Venta #FACT-1753387344251	SALIDA	1
+19	1	2025-07-24 15:09:41.962928	3	Venta #FACT-1753387717973	SALIDA	1
+20	1	2025-07-29 05:43:35.941284	1	Venta #FACT-1753785691901	SALIDA	1
+21	2	2025-07-29 05:43:36.06627	2	Venta #FACT-1753785691901	SALIDA	1
+22	1	2025-07-29 06:03:06.818847	2	Venta #FACT-1753786861959	SALIDA	1
+23	1	2025-07-29 06:03:06.864408	1	Venta #FACT-1753786861959	SALIDA	1
+24	14	2025-07-29 06:13:07.0566	6	Ajuste manual: 12 → 14 unidades	AJUSTE	1
+27	2	2025-07-29 10:22:03.600056	6	Venta #FACT-1753802398393	SALIDA	1
+28	1	2025-07-29 10:22:03.624834	4	Venta #FACT-1753802398393	SALIDA	1
+29	1	2025-07-31 00:31:17.359719	6	Venta #FACT-1753939692475	SALIDA	1
+30	2	2025-07-31 00:31:17.49772	4	Venta #FACT-1753939692475	SALIDA	1
+31	1	2025-07-31 00:31:17.503721	5	Venta #FACT-1753939692475	SALIDA	1
+32	3	2025-08-12 13:56:45.112945	4	Venta #FACT-1755024881209	SALIDA	1
+33	2	2025-08-12 13:56:45.21308	5	Venta #FACT-1755024881209	SALIDA	1
+34	3	2025-08-12 14:07:57.932546	6	Venta #FACT-1755025553910	SALIDA	1
+35	2	2025-08-12 14:07:57.95975	4	Venta #FACT-1755025553910	SALIDA	1
+36	5	2025-09-05 10:13:32.350084	21	Venta #FACT-1757085087844	SALIDA	1
+37	3	2025-09-05 10:13:32.386085	22	Venta #FACT-1757085087844	SALIDA	1
+38	1	2025-09-23 15:24:52.487138	21	Venta #FACT-1758658907081	SALIDA	1
+39	1	2025-09-23 15:24:52.577224	6	Venta #FACT-1758658907081	SALIDA	1
+40	1	2025-09-23 15:24:52.588188	25	Venta #FACT-1758658907081	SALIDA	1
+\.
+
+
+--
+-- TOC entry 4856 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: inventarios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inventarios_id_seq', 31, true);
+
+
+--
+-- TOC entry 4857 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: movimientos_inventario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.movimientos_inventario_id_seq', 40, true);
+
+
+--
+-- TOC entry 4697 (class 2606 OID 24701)
+-- Name: inventarios inventarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventarios
+    ADD CONSTRAINT inventarios_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4701 (class 2606 OID 24709)
+-- Name: movimientos_inventario movimientos_inventario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.movimientos_inventario
+    ADD CONSTRAINT movimientos_inventario_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4699 (class 2606 OID 24711)
+-- Name: inventarios uk_4xirt8ux8pvdhtj9cqwbxn2qx; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventarios
+    ADD CONSTRAINT uk_4xirt8ux8pvdhtj9cqwbxn2qx UNIQUE (producto_id);
+
+
+-- Completed on 2025-09-23 16:05:06
+
+--
+-- PostgreSQL database dump complete
+--
+

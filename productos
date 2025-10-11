@@ -1,0 +1,352 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.3
+-- Dumped by pg_dump version 16.3
+
+-- Started on 2025-09-23 16:04:32
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 216 (class 1259 OID 24713)
+-- Name: categorias; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.categorias (
+    id bigint NOT NULL,
+    activo boolean NOT NULL,
+    descripcion character varying(250),
+    fecha_actualizacion timestamp(6) without time zone NOT NULL,
+    fecha_creacion timestamp(6) without time zone NOT NULL,
+    nombre character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.categorias OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1259 OID 24712)
+-- Name: categorias_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.categorias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.categorias_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4865 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: categorias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.categorias_id_seq OWNED BY public.categorias.id;
+
+
+--
+-- TOC entry 218 (class 1259 OID 24720)
+-- Name: empresas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.empresas (
+    id bigint NOT NULL,
+    activo boolean NOT NULL,
+    direccion character varying(200),
+    email character varying(100),
+    fecha_actualizacion timestamp(6) without time zone NOT NULL,
+    fecha_creacion timestamp(6) without time zone NOT NULL,
+    nombre character varying(100) NOT NULL,
+    ruc character varying(20) NOT NULL,
+    telefono character varying(15)
+);
+
+
+ALTER TABLE public.empresas OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 24719)
+-- Name: empresas_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.empresas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.empresas_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4866 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: empresas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.empresas_id_seq OWNED BY public.empresas.id;
+
+
+--
+-- TOC entry 220 (class 1259 OID 24727)
+-- Name: productos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.productos (
+    id bigint NOT NULL,
+    activo boolean NOT NULL,
+    descripcion character varying(500),
+    fecha_actualizacion timestamp(6) without time zone NOT NULL,
+    fecha_creacion timestamp(6) without time zone NOT NULL,
+    imagen character varying(255),
+    nombre character varying(100) NOT NULL,
+    precio numeric(10,2) NOT NULL,
+    categoria_id bigint NOT NULL,
+    empresa_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.productos OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 24726)
+-- Name: productos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.productos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.productos_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4867 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: productos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.productos_id_seq OWNED BY public.productos.id;
+
+
+--
+-- TOC entry 4698 (class 2604 OID 24716)
+-- Name: categorias id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categorias ALTER COLUMN id SET DEFAULT nextval('public.categorias_id_seq'::regclass);
+
+
+--
+-- TOC entry 4699 (class 2604 OID 24723)
+-- Name: empresas id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.empresas ALTER COLUMN id SET DEFAULT nextval('public.empresas_id_seq'::regclass);
+
+
+--
+-- TOC entry 4700 (class 2604 OID 24730)
+-- Name: productos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productos ALTER COLUMN id SET DEFAULT nextval('public.productos_id_seq'::regclass);
+
+
+--
+-- TOC entry 4855 (class 0 OID 24713)
+-- Dependencies: 216
+-- Data for Name: categorias; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.categorias (id, activo, descripcion, fecha_actualizacion, fecha_creacion, nombre) FROM stdin;
+1	t	Teléfonos inteligentes de última generación	2025-05-15 14:02:42.797327	2025-05-15 14:02:42.797327	Smartphones
+2	t	Computadores portátiles para uso cotidiano	2025-05-20 11:20:10.675342	2025-05-20 11:20:10.675342	Laptops
+3	t	Selección de vinos artesanales e industriales para todo gusto.	2025-07-01 14:08:32.446169	2025-07-01 14:08:32.446169	Vinos
+4	t	Los productos lácteos son alimentos derivados de la leche de mamíferos.	2025-07-29 06:05:01.477629	2025-07-29 06:05:01.477629	Lácteos
+5	t	Mermeladas con varios sabores de frutas	2025-07-29 10:21:55.031329	2025-07-29 10:21:55.031329	Mermeladas
+6	t	Chochos de diferentes sabores	2025-09-05 06:27:00.645881	2025-09-05 06:25:43.429136	Chochos
+7	t	Productos cárnicos frescos y de alta calidad, ideales para una alimentación sabrosa y nutritiva.	2025-09-05 06:29:24.875744	2025-09-05 06:29:24.875744	Cárnicos
+\.
+
+
+--
+-- TOC entry 4857 (class 0 OID 24720)
+-- Dependencies: 218
+-- Data for Name: empresas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.empresas (id, activo, direccion, email, fecha_actualizacion, fecha_creacion, nombre, ruc, telefono) FROM stdin;
+1	t	Calle Principal 123	contacto@empresaprueba.com	2025-05-15 13:48:21.747568	2025-05-15 13:48:21.747568	Empresa de Prueba	12345678901	0987654321
+5	t	Barrio: QUINTICUSIG	contacto@empresaprueba.com	2025-07-01 14:07:15.532268	2025-07-01 14:07:15.532268	El último Inca	1234567890111	0997279323
+6	t	Producción y comercialización de productos lácteos (Queso fresco, queso mozzarella, queso andino)	sigcholac@gmail.com	2025-07-29 06:03:28.688722	2025-07-29 06:03:28.688722	Sigcholac	1212154849865	0992000198
+7	t	Perla Andina se dedica a la venta vinos	perlaandina@gmail.com	2025-07-29 10:21:24.040569	2025-07-29 10:21:24.039422	Perla Andina	3213545484645	0993396358
+2	f	Av. 10 de agosto	acercompany@gmail.com	2025-09-05 06:07:59.690794	2025-05-20 11:22:04.611584	ACER	50198136260	179475608
+4	f	string	applecompany@gmail.com	2025-09-05 06:08:02.46141	2025-05-20 11:27:19.56625	APPLE	7788993366601	779475588
+8	t	 C. N74-C, Quito 170307	info@grandesfoods.com	2025-09-05 06:18:16.434279	2025-09-05 06:18:16.434279	Grandes Foods	1792004411001	0993665065
+\.
+
+
+--
+-- TOC entry 4859 (class 0 OID 24727)
+-- Dependencies: 220
+-- Data for Name: productos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.productos (id, activo, descripcion, fecha_actualizacion, fecha_creacion, imagen, nombre, precio, categoria_id, empresa_id) FROM stdin;
+3	f	iPhone 13 normal, con cargador	2025-08-12 13:49:54.16568	2025-05-20 11:45:24.636902	https://think-ecuador.com/wp-content/uploads/2021/10/0160300772-10-600x600.jpeg	iPhone 13	650.00	1	4
+26	t	Queso mozzarella artesanal de 500g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:02:29.136475	2025-09-05 06:02:29.136475	https://i.imgur.com/gJIX6pd.png	Queso mozzarella | 500g 	3.40	4	6
+5	t	Vino artesanal elaborado con mortiño andino, sabor único y frutal.	2025-07-01 14:16:35.15289	2025-07-01 14:16:35.15289	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=600,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679555023779-MORTI%25C3%2583%25C2%2591O%2520SMALL.png	Vino de Mortiño | 375ml	4.25	3	5
+6	t	Vino artesanal elaborado con mortiño andino, sabor único y frutal.	2025-07-01 14:17:33.624593	2025-07-01 14:17:33.624593	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=656,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679548183215-MORTI%25C3%2583%25C2%2591O.png	Vino de Mortiño | 750ml	7.25	3	5
+4	t	Vino artesanal elaborado con mortiño andino, sabor único y frutal.	2025-07-01 14:13:51.761509	2025-07-01 14:13:51.761509	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=600,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679555028968-MORTI%25C3%2583%25C2%2591O%2520MINI.png	Vino de Mortiño | 165ml	2.25	3	5
+7	t	Vino artesanal elaborado con frambuesa, sabor único y frutal.	2025-07-01 14:20:12.821064	2025-07-01 14:20:12.821064	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=656,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679548692567-FRAMBUESA.png	Vino de Frambuesa | 750ml	8.00	3	5
+8	t	Vino artesanal elaborado con frambuesa, sabor único y frutal.	2025-07-01 14:21:05.763206	2025-07-01 14:21:05.763206	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=600,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679549878311-FRAMBUESA%2520SMALL.png	Vino de Frambuesa | 375ml	4.50	3	5
+9	t	Vino artesanal elaborado con frambuesa, sabor único y frutal.	2025-07-01 14:22:07.186138	2025-07-01 14:22:07.186138	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679555591286-FRAMBUESA%2520MINI.png	Vino de Frambuesa | 165ml	2.50	3	5
+10	t	Vino artesanal elaborado con Pitahaya, sabor único y frutal.	2025-07-01 14:23:32.487493	2025-07-01 14:23:32.487493	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679555424389-PITAHAYA%2520MINI.png	Vino de Pitahaya | 165ml	2.25	3	5
+11	t	Vino artesanal elaborado con Pitahaya, sabor único y frutal.	2025-07-01 14:24:07.957449	2025-07-01 14:24:07.957449	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679549970343-PITAHAYA%2520SMALL.png	Vino de Pitahaya | 375ml	4.25	3	5
+12	t	Vino artesanal elaborado con Pitahaya, sabor único y frutal.	2025-07-01 14:24:46.618153	2025-07-01 14:24:46.618153	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679549468568-PITAHAYA.png	Vino de Pitahaya | 750ml	7.25	3	5
+13	t	Vino artesanal elaborado con Maracuyá, sabor único y frutal.	2025-07-01 14:26:23.922362	2025-07-01 14:26:23.922362	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1679548980880-MARACUYA.png	Vino de Maracuyá | 750ml	7.25	3	5
+14	t	Vino artesanal elaborado con Maracuyá, sabor único y frutal.	2025-07-01 14:27:00.098953	2025-07-01 14:27:00.098953	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1681336495232-MARACUYA%2520SMALL.png	Vino de Maracuyá | 375ml	4.25	3	5
+15	t	Vino artesanal elaborado con Maracuyá, sabor único y frutal.	2025-07-01 14:27:27.647373	2025-07-01 14:27:27.647373	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1681336495232-MARACUYA%2520MINI.png	Vino de Maracuyá | 165ml	2.25	3	5
+19	t	Vino dulce 750ml	2025-09-05 05:11:26.201804	2025-09-05 05:11:26.201804	https://i.imgur.com/Ae1cuO6.png	Vino de mortiño	7.00	3	7
+20	t	Es un producto elaborado con estrictos estándares de calidad y producción extraído de los páramos andinos, fruta natural.	2025-09-05 05:15:06.03644	2025-09-05 05:15:06.03644	https://i.imgur.com/xNInmeg.png	Vino de mortiño | 375 ml	5.00	3	7
+16	t	1 Queso fresco 500gr | 1 Yogurt de 2 Litros | 1 Queso Mozzarella 500g	2025-07-29 06:08:08.752915	2025-07-29 06:07:43.654329	https://i.imgur.com/vFaigkD.png	GRAN PROMOCIÓN	10.00	4	6
+17	t	Vino sabor a frambuesa 750ml	2025-07-29 10:23:42.717811	2025-07-29 10:23:42.717811	https://i.imgur.com/v9oRrJG.png	Vino sabor Frambuesa	10.00	3	7
+18	t	Vino artesanal elaborado con Uva, sabor único y frutal.	2025-07-31 00:11:44.079116	2025-07-31 00:11:44.078116	https://cdn.zyrosite.com/cdn-cgi/image/format=auto,w=861,fit=crop/cdn-ecommerce/store_01GQQFWQ3ZM7PMRXBNP6HY8WRH%2Fassets%2F1681336495232-MARACUYA%2520MINI.png	Vino de Uva | 1L	10.00	3	5
+1	f	El último modelo de iPhone	2025-08-12 13:49:49.637302	2025-05-15 14:03:04.877067	https://www.todohogar.com/286036-medium_default/apple-celular-iphone-15-pro-128gb-cip-a17-pro-ios-titanio-61.jpg	iPhone 15 Prox	999.99	1	1
+2	f	iPhone 15 Pro Max Full HD	2025-08-12 13:49:52.237114	2025-05-20 11:35:40.937431	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBfB1WE5z94zdy2_ZduWo-9xFlC9kZHD01eg&s	iPhone 15	1100.00	1	4
+21	t	Es un producto elaborado con estrictos estándares de calidad y producción extraído de los páramos andinos, fruta natural.	2025-09-05 05:16:39.65872	2025-09-05 05:16:39.65872	https://i.imgur.com/39teCT3.png	Vino de Mortiño |165 ML	2.25	3	7
+22	t	Es un producto elaborado con estrictos estándares de calidad y producción extraído de los páramos andinos, fruta natural.	2025-09-05 05:18:00.267946	2025-09-05 05:18:00.267946	https://i.imgur.com/zRafdjv.png	Vino de mortiño seco | 750 ml	10.00	3	7
+23	t	La mora es una fruta obscura y jugosa cosechados en climas templados de nuestro cantón además es un producto elaborado con estrictos estándares de calidad y producción.	2025-09-05 05:19:45.077842	2025-09-05 05:19:45.077842	https://i.imgur.com/SrWVz35.png	Vino de mora | 750 ml	10.00	3	7
+24	t	La mora es una fruta obscura y jugosa cosechados en climas templados de nuestro cantón además es un producto elaborado con estrictos estándares de calidad y producción.	2025-09-05 05:21:25.342449	2025-09-05 05:21:25.342449	https://i.imgur.com/SmEGeU2.png	Vino de mora | 375 ml	5.00	3	7
+25	t	Queso fresco artesanal de 500g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 05:59:29.458954	2025-09-05 05:59:29.458954	https://i.imgur.com/ZSJbdcm.png	Queso fresco | 500g 	2.40	4	6
+27	t	Queso mozzarella artesanal de 1000g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:05:26.251448	2025-09-05 06:05:26.251448	https://i.imgur.com/88svWy3.png	Queso mozzarella | 1000g 	6.70	4	6
+28	t	Queso tipo finca de 1000g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:06:35.429804	2025-09-05 06:06:35.429804		Queso tipo finca |1000g	4.00	4	6
+29	t	Queso tipo finca de 500g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:08:42.919127	2025-09-05 06:08:42.919127		Queso tipo finca | 500g	2.00	4	6
+30	t	Yogurt cremoso y nutritivo, ideal para disfrutar en cualquier momento del día. Disponible en deliciosos sabores.	2025-09-05 06:11:35.25305	2025-09-05 06:11:35.25305	https://i.imgur.com/WJPBd3I.png	Yogurt de 4 litros	5.00	4	6
+31	t	Yogurt cremoso y nutritivo, ideal para disfrutar en cualquier momento del día. Disponible en deliciosos sabores.	2025-09-05 06:12:43.387041	2025-09-05 06:12:43.387041	https://i.imgur.com/WJPBd3I.png	Yogurt de 2 litros	3.00	4	6
+32	t	Yogurt cremoso y nutritivo, ideal para disfrutar en cualquier momento del día. Disponible en deliciosos sabores.	2025-09-05 06:14:19.183778	2025-09-05 06:14:19.183778	https://i.imgur.com/7C6VcDe.png	Yogurt de 1 litro	1.75	3	6
+33	t	Yogurt cremoso y nutritivo, ideal para disfrutar en cualquier momento del día. Disponible en deliciosos sabores.	2025-09-05 06:15:41.471289	2025-09-05 06:15:41.471289	https://i.imgur.com/5NmoEJ1.png	Yogurt de 0.5 litros	1.00	4	6
+34	t	"Queso fresco artesanal de 500g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:20:27.89084	2025-09-05 06:20:27.89084	https://i.imgur.com/eCJ8Ycr.png	Queso fresco | 500g	3.00	4	8
+35	t	Queso mozzarella artesanal de 500g, elaborado con leche de alta calidad. Ideal para acompañar tus comidas, bocadillos o disfrutar solo. Producto 100% natural, con un sabor suave y textura cremosa.	2025-09-05 06:22:00.664222	2025-09-05 06:22:00.664222	https://i.imgur.com/NaoM78G.png	Queso mozzarella | 500g	4.25	4	8
+36	t	Yogurt cremoso y nutritivo, ideal para disfrutar en cualquier momento del día. Disponible en deliciosos sabores.	2025-09-05 06:24:29.564663	2025-09-05 06:24:29.564663	https://i.imgur.com/67jahHz.png	Yogurt 1 litro	2.50	4	8
+37	t	Snack nutritivo a base de chocho, ideal para una alimentación saludable y práctica. Rico en proteína vegetal y sabor.	2025-09-05 06:26:50.099905	2025-09-05 06:26:50.099905	https://i.imgur.com/pwVF7Yg.png	Choco | 100g	3.00	6	8
+38	t	Productos cárnicos frescos y de alta calidad, ideales para una alimentación sabrosa y nutritiva.	2025-09-05 06:30:17.951555	2025-09-05 06:30:17.951555	https://i.imgur.com/2YTpcjD.png	Salchicha de ternera 500g	4.00	7	8
+39	t	Longaniza de Praga, ahumada y sazonada al estilo tradicional, con un sabor intenso y textura jugosa.	2025-09-05 06:31:40.400868	2025-09-05 06:31:40.400868	https://i.imgur.com/2HEc13i.png	Longaniza de Praga	4.50	7	8
+40	t	Morcilla de sangre artesanal, con sabor tradicional y especias selectas, ideal para parrillas y guisos.	2025-09-05 06:33:08.114349	2025-09-05 06:33:08.114349	https://i.imgur.com/faQboVz.png	Morcilla de sangre | 500g	3.00	7	8
+41	t	Salchicha de ternera 500g, elaborada con carne 100% de res, jugosa, sabrosa y lista para asar o cocinar.	2025-09-05 06:34:52.252288	2025-09-05 06:34:52.252288	https://i.imgur.com/2YTpcjD_d.png?maxwidth=520&shape=thumb&fidelity=high	Salchicha de ternera | 500g	4.00	7	8
+42	t	Salchicha Frankfurt 500g, clásica y ahumada, con sabor suave y textura firme. Ideal para hot dogs y parrilladas.	2025-09-05 06:36:08.027092	2025-09-05 06:36:08.027092	https://i.imgur.com/Y9LX4Gq.png	Salchita Frankfurt | 500g	3.00	7	8
+43	t	El vino de frambuesa, nos puede ofrece varios beneficios potenciales para la salud, principalmente debido a su contenido de antioxidantes y compuestos bioactivos combatir el estrés oxidativo, mejorar la salud cardiovascular, y fortalecer el sistema inmunológico	2025-09-05 10:08:19.981775	2025-09-05 10:08:19.981775	https://i.imgur.com/SmEGeU2_d.png?maxwidth=520&shape=thumb&fidelity=high	VINO DE FRAMBUESA | 750 ML	10.00	3	7
+\.
+
+
+--
+-- TOC entry 4868 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: categorias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.categorias_id_seq', 7, true);
+
+
+--
+-- TOC entry 4869 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: empresas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.empresas_id_seq', 8, true);
+
+
+--
+-- TOC entry 4870 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: productos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.productos_id_seq', 43, true);
+
+
+--
+-- TOC entry 4702 (class 2606 OID 24718)
+-- Name: categorias categorias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categorias
+    ADD CONSTRAINT categorias_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4704 (class 2606 OID 24725)
+-- Name: empresas empresas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.empresas
+    ADD CONSTRAINT empresas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4708 (class 2606 OID 24734)
+-- Name: productos productos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productos
+    ADD CONSTRAINT productos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4706 (class 2606 OID 24864)
+-- Name: empresas uk_d6avi1g5t06l7qo67kj8ty2j2; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.empresas
+    ADD CONSTRAINT uk_d6avi1g5t06l7qo67kj8ty2j2 UNIQUE (ruc);
+
+
+--
+-- TOC entry 4709 (class 2606 OID 24737)
+-- Name: productos fk2fwq10nwymfv7fumctxt9vpgb; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productos
+    ADD CONSTRAINT fk2fwq10nwymfv7fumctxt9vpgb FOREIGN KEY (categoria_id) REFERENCES public.categorias(id);
+
+
+--
+-- TOC entry 4710 (class 2606 OID 24742)
+-- Name: productos fkl3jqa7c6vtlmpsna6prmr8nab; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productos
+    ADD CONSTRAINT fkl3jqa7c6vtlmpsna6prmr8nab FOREIGN KEY (empresa_id) REFERENCES public.empresas(id);
+
+
+-- Completed on 2025-09-23 16:04:32
+
+--
+-- PostgreSQL database dump complete
+--
+
